@@ -1,0 +1,1 @@
+window.RV=window.RV||{};window.RV["com.bean.edu.toeic.words.basic"]=[];

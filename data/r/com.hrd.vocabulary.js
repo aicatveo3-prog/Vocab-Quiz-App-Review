@@ -1,0 +1,1 @@
+window.RV=window.RV||{};window.RV["com.hrd.vocabulary"]=[[3,"편리하긴한데 한국어 언어 지원도 좀 해주세요","2026-01",0,"wish,+short,+wish"]];

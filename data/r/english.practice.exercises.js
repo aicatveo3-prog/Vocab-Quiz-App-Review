@@ -1,0 +1,1 @@
+window.RV=window.RV||{};window.RV["english.practice.exercises"]=[[4,"사용하기 쉽고 편리합니다.","2024-07",0,"+short"],[5,"잘 이용하고 있어요^^~","2022-04",0,""]];

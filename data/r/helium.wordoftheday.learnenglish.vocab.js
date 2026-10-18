@@ -1,0 +1,1 @@
+window.RV=window.RV||{};window.RV["helium.wordoftheday.learnenglish.vocab"]=[[5,"이제 써보려고 합니다","2020-03",0,""]];
