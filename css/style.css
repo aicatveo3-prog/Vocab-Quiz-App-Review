@@ -231,3 +231,38 @@ h3{margin:0 0 6px;font-size:14px}
 .lb-in{max-width:min(94vw,460px);max-height:94vh;display:flex;flex-direction:column;gap:10px}
 .lb-in img{display:block;max-width:100%;max-height:80vh;object-fit:contain;border-radius:14px;background:#fff}
 .lb-c{color:#fff;font-size:13px;line-height:1.5;text-align:center}
+
+/* ── 앱 소개 보고서 ── */
+.overview{margin:4px 0 36px;padding-bottom:28px;border-bottom:1px solid var(--line)}
+.ov-head h2{font-size:22px;margin:0 0 4px;letter-spacing:-.3px}
+.ov-head .meta{margin:0 0 14px}
+.ov-kv{padding:6px 18px;margin-bottom:20px}
+.ov-row{display:grid;grid-template-columns:96px 1fr;gap:14px;padding:11px 0;border-bottom:1px solid var(--line);font-size:14px}
+.ov-row:last-child{border-bottom:0}
+.ov-k{font-weight:700;color:var(--accent);font-size:13px}
+.ov-v{color:var(--ink)}
+.ov-sec{margin:26px 0}
+.ov-sh{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.ov-sh h3{margin:0;font-size:16px}
+.ov-badge{font-size:11px;font-weight:700;color:var(--dim);background:var(--soft);border-radius:999px;padding:1px 10px}
+.ov-steps{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:14px;margin-top:10px}
+.ov-step{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 10px 12px}
+.ov-step p{margin:6px 2px 0;font-size:13px;color:var(--dim);line-height:1.55}
+.ov-st{display:flex;align-items:center;gap:8px;margin-top:10px;padding:0 2px}
+.ov-n{flex:none;width:20px;height:20px;border-radius:50%;background:var(--accent);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.ov-big{width:100%;padding:0;background:none;border:0;border-radius:10px;overflow:hidden}
+.ov-big img{border-radius:10px;border:1px solid var(--line)}
+.ov-ul{margin:8px 0 12px;padding-left:20px;font-size:14px;color:var(--dim)}
+.ov-ul li{margin:5px 0}
+.ov-shots{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px}
+.ov-tw{overflow-x:auto;margin-top:6px}
+.ov-t{width:100%;border-collapse:collapse;font-size:13.5px;background:var(--card);border:1px solid var(--line);border-radius:12px}
+.ov-t th,.ov-t td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;line-height:1.5}
+.ov-t thead th{background:var(--soft);font-size:12px;color:var(--dim)}
+.ov-t tbody th{font-weight:700;white-space:nowrap;color:var(--ink)}
+.ov-t tr:last-child th,.ov-t tr:last-child td{border-bottom:0}
+.ov-note{margin:10px 0 0;padding:10px 14px;background:var(--accent-bg);color:var(--ink);border-radius:10px;font-size:13.5px}
+@media (max-width:700px){
+  .ov-row{grid-template-columns:1fr;gap:2px}
+  .ov-steps{grid-template-columns:repeat(2,1fr);gap:10px}
+}

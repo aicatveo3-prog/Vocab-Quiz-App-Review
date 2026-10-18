@@ -160,6 +160,8 @@ def build_summary(aid, revs):
         out[k].sort(key=lambda x: -x['n'])
     if d.get('exam'):
         out['exam'] = enrich(d['exam'])
+    if d.get('overview'):
+        out['overview'] = d['overview']   # 앱 소개 보고서
     if d.get('handsOn'):
         out['handsOn'] = d['handsOn']   # 직접 써 본 결과(화면 캡처 목록 포함)는 그대로 내보낸다
     os.makedirs(os.path.join(SITE, 'data', 'summary'), exist_ok=True)

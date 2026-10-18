@@ -291,15 +291,63 @@
     ].concat(cards));
   }
 
+  /* 앱 소개 보고서: 한 장 요약 + 단계별 화면 + 표 */
+  function buildOverview(O, shots) {
+    var byId = {}; shots.forEach(function (x) { byId[x.id] = x; });
+    function shotBtn(id, big) {
+      var sh = byId[id]; if (!sh) return null;
+      return h('button', { class: 'ho-img' + (big ? ' ov-big' : ''), type: 'button', title: sh.caption, onclick: function () { openShot(sh); } }, [
+        h('img', { src: sh.file, alt: sh.caption, loading: 'lazy' }),
+        big ? null : h('span', { text: sh.caption })
+      ]);
+    }
+    var parts = [
+      h('div', { class: 'ov-head' }, [h('h2', { text: O.title }), h('p', { class: 'meta', text: O.sub })]),
+      h('div', { class: 'card ov-kv' }, O.kv.map(function (r) {
+        return h('div', { class: 'ov-row' }, [h('div', { class: 'ov-k', text: r[0] }), h('div', { class: 'ov-v', text: r[1] })]);
+      }))
+    ];
+    O.sections.forEach(function (sec) {
+      var kids = [h('div', { class: 'ov-sh' }, [h('h3', { text: sec.title }), sec.badge ? h('span', { class: 'ov-badge', text: sec.badge }) : null])];
+      if (sec.intro) kids.push(h('p', { class: 'meta', text: sec.intro }));
+      if (sec.steps) {
+        kids.push(h('div', { class: 'ov-steps' }, sec.steps.map(function (st, i) {
+          return h('div', { class: 'ov-step' }, [
+            shotBtn(st.shot, true),
+            h('div', { class: 'ov-st' }, [h('span', { class: 'ov-n', text: i + 1 }), h('b', { text: st.title })]),
+            h('p', { text: st.text })
+          ]);
+        })));
+      }
+      if (sec.bullets) kids.push(h('ul', { class: 'ov-ul' }, sec.bullets.map(function (b) { return h('li', { text: b }); })));
+      if (sec.shots) kids.push(h('div', { class: 'ov-shots' }, sec.shots.map(function (id) { return shotBtn(id, false); })));
+      parts.push(h('div', { class: 'ov-sec' }, kids));
+    });
+    if (O.compare) {
+      var C = O.compare;
+      parts.push(h('div', { class: 'ov-sec' }, [
+        h('div', { class: 'ov-sh' }, [h('h3', { text: C.title })]),
+        h('div', { class: 'ov-tw' }, [h('table', { class: 'ov-t' }, [
+          h('thead', null, [h('tr', null, C.head.map(function (x) { return h('th', { text: x }); }))]),
+          h('tbody', null, C.rows.map(function (r) { return h('tr', null, r.map(function (c, i) { return h(i ? 'td' : 'th', { text: c, scope: i ? null : 'row' }); })); }))
+        ])]),
+        C.note ? h('p', { class: 'ov-note', text: C.note }) : null
+      ]));
+    }
+    if (O.limits) parts.push(h('p', { class: 'note', text: '한계: ' + O.limits }));
+    return h('section', { class: 'overview', id: 's-overview' }, parts);
+  }
+
   function buildSummary(a, revs, S, box) {
     var total = S.total;
     function sec(title, sub, kids, key) { return h('section', { class: 'sum-sec', id: 's-' + (key || '') }, [h('h2', { text: title }), sub ? h('p', { class: 'meta', text: sub }) : null].concat(kids)); }
+    if (S.overview) box.appendChild(buildOverview(S.overview, S.handsOn ? S.handsOn.shots : []));
     box.appendChild(h('div', { class: 'card sum-top' }, [
       h('div', { class: 'sum-tag', text: 'AI가 리뷰를 읽고 정리한 요약' }),
       h('p', { class: 'one', text: S.oneLine }),
       h('p', { class: 'note', text: S.scopeNote })
     ]));
-    var navItems = (S.handsOn ? [['hands', '직접 체험']] : []).concat([['neg', '불만'], ['pos', '칭찬'], ['wish', '건의'], ['exam', '시험 준비'], ['facts', '사실'], ['tl', '시간 흐름'], ['learn', '시사점'], ['raw', '원문']]);
+    var navItems = (S.overview ? [['overview', '앱 소개']] : []).concat(S.handsOn ? [['hands', '직접 체험']] : []).concat([['neg', '불만'], ['pos', '칭찬'], ['wish', '건의'], ['exam', '시험 준비'], ['facts', '사실'], ['tl', '시간 흐름'], ['learn', '시사점'], ['raw', '원문']]);
     var nav = h('nav', { class: 'subnav' }, navItems.map(function (n) {
       return h('a', { href: '#s-' + n[0], onclick: function (e) { e.preventDefault(); var el = document.getElementById('s-' + n[0]); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); } , text: n[1] });
     }));
