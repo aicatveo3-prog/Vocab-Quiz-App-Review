@@ -241,18 +241,42 @@
     return h('div', { class: 'wish' }, [btn, ev]);
   }
 
-  /* 캡처 확대 보기: 바깥을 누르거나 Esc 로 닫는다 */
-  function openShot(shot) {
+  /* 캡처 확대 보기: items = [{file, caption, title, text}] 묶음 안에서 ←/→ 로 넘기고, 설명 글을 옆에 같이 보여준다.
+     바깥을 누르거나 Esc 로 닫는다. */
+  function openShot(items, start) {
+    var i = start || 0, imgEl = h('img', { alt: '' }), cap = h('div', { class: 'lb-c' });
+    var ttl = h('div', { class: 'lb-title' }), body = h('div', { class: 'lb-body' }), cnt = h('div', { class: 'lb-cnt' });
+    var prev = h('button', { class: 'lb-nav lb-prev', type: 'button', 'aria-label': '이전 화면', text: '‹', onclick: function (e) { e.stopPropagation(); go(-1); } });
+    var next = h('button', { class: 'lb-nav lb-next', type: 'button', 'aria-label': '다음 화면', text: '›', onclick: function (e) { e.stopPropagation(); go(1); } });
+    var side = h('div', { class: 'lb-side' }, [cnt, ttl, body, cap]);
     var ov = h('div', { class: 'lb', role: 'dialog', 'aria-label': '화면 확대' }, [
-      h('div', { class: 'lb-in' }, [
-        h('img', { src: shot.file, alt: shot.caption }),
-        h('div', { class: 'lb-c', text: shot.caption })
-      ])
+      h('div', { class: 'lb-in', onclick: function (e) { e.stopPropagation(); } }, [
+        h('div', { class: 'lb-fig' }, [imgEl]),
+        side
+      ]),
+      prev, next
     ]);
+    function show() {
+      var it = items[i];
+      imgEl.src = it.file; imgEl.alt = it.caption || '';
+      ttl.textContent = it.title || ''; ttl.style.display = it.title ? '' : 'none';
+      body.textContent = it.text || ''; body.style.display = it.text ? '' : 'none';
+      cap.textContent = it.caption || '';
+      cnt.textContent = items.length > 1 ? (i + 1) + ' / ' + items.length + '  ← → 키로 넘겨요' : '';
+      prev.style.display = next.style.display = items.length > 1 ? '' : 'none';
+      side.scrollTop = 0;
+      [i - 1, i + 1].forEach(function (k) { if (items[k]) { var p = new Image(); p.src = items[k].file; } });
+    }
+    function go(d) { var n = i + d; if (n < 0 || n >= items.length) return; i = n; show(); }
     function close() { document.removeEventListener('keydown', onKey); if (ov.parentNode) ov.parentNode.removeChild(ov); }
-    function onKey(e) { if (e.key === 'Escape') close(); }
+    function onKey(e) {
+      if (e.key === 'Escape') close();
+      else if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); }
+      else if (e.key === 'ArrowRight') { e.preventDefault(); go(1); }
+    }
     ov.addEventListener('click', close);
     document.addEventListener('keydown', onKey);
+    show();
     document.body.appendChild(ov);
   }
 
@@ -263,9 +287,13 @@
     H.findings.forEach(function (f) { cnt[f.status] = (cnt[f.status] || 0) + 1; });
     var cards = H.findings.map(function (f) {
       var st = STATUS[f.status] || STATUS.part;
-      var thumbs = h('div', { class: 'ho-th' }, f.shots.map(function (id) {
+      var group = f.shots.map(function (id) {
         var sh = byId[id];
-        return h('button', { class: 'ho-img', type: 'button', title: sh.caption, onclick: function () { openShot(sh); } }, [
+        return { file: sh.file, caption: sh.caption, title: st[0] + ' · ' + f.claim, text: f.text };
+      });
+      var thumbs = h('div', { class: 'ho-th' }, f.shots.map(function (id, gi) {
+        var sh = byId[id];
+        return h('button', { class: 'ho-img', type: 'button', title: sh.caption, onclick: function () { openShot(group, gi); } }, [
           h('img', { src: sh.file, alt: sh.caption, loading: 'lazy' }),
           h('span', { text: sh.caption })
         ]);
@@ -294,9 +322,10 @@
   /* 앱 소개 보고서: 한 장 요약 + 단계별 화면 + 표 */
   function buildOverview(O, shots) {
     var byId = {}; shots.forEach(function (x) { byId[x.id] = x; });
-    function shotBtn(id, big) {
+    /* group: 같은 섹션의 캡처 묶음(확대 화면에서 ←/→ 로 넘기는 범위), gi: 묶음 안 순서 */
+    function shotBtn(id, big, group, gi) {
       var sh = byId[id]; if (!sh) return null;
-      return h('button', { class: 'ho-img' + (big ? ' ov-big' : ''), type: 'button', title: sh.caption, onclick: function () { openShot(sh); } }, [
+      return h('button', { class: 'ho-img' + (big ? ' ov-big' : ''), type: 'button', title: sh.caption, onclick: function () { openShot(group, gi); } }, [
         h('img', { src: sh.file, alt: sh.caption, loading: 'lazy' }),
         big ? null : h('span', { text: sh.caption })
       ]);
@@ -311,16 +340,27 @@
       var kids = [h('div', { class: 'ov-sh' }, [h('h3', { text: sec.title }), sec.badge ? h('span', { class: 'ov-badge', text: sec.badge }) : null])];
       if (sec.intro) kids.push(h('p', { class: 'meta', text: sec.intro }));
       if (sec.steps) {
+        var sgroup = sec.steps.map(function (st, i) {
+          var s = byId[st.shot] || {};
+          return { file: s.file, caption: s.caption, title: (i + 1) + '. ' + st.title, text: st.text };
+        });
         kids.push(h('div', { class: 'ov-steps' }, sec.steps.map(function (st, i) {
           return h('div', { class: 'ov-step' }, [
-            shotBtn(st.shot, true),
+            shotBtn(st.shot, true, sgroup, i),
             h('div', { class: 'ov-st' }, [h('span', { class: 'ov-n', text: i + 1 }), h('b', { text: st.title })]),
             h('p', { text: st.text })
           ]);
         })));
       }
       if (sec.bullets) kids.push(h('ul', { class: 'ov-ul' }, sec.bullets.map(function (b) { return h('li', { text: b }); })));
-      if (sec.shots) kids.push(h('div', { class: 'ov-shots' }, sec.shots.map(function (id) { return shotBtn(id, false); })));
+      if (sec.shots) {
+        var btxt = (sec.bullets || []).map(function (b) { return '• ' + b; }).join('\n');
+        var ggroup = sec.shots.map(function (id) {
+          var s = byId[id] || {};
+          return { file: s.file, caption: s.caption, title: sec.title, text: btxt };
+        });
+        kids.push(h('div', { class: 'ov-shots' }, sec.shots.map(function (id, gi) { return shotBtn(id, false, ggroup, gi); })));
+      }
       parts.push(h('div', { class: 'ov-sec' }, kids));
     });
     if (O.compare) {
