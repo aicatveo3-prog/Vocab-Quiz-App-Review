@@ -63,6 +63,10 @@ h3{margin:0 0 6px;font-size:14px}
 /* 앱 카드 */
 .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
 .app{display:block;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;box-shadow:var(--shadow);transition:border-color .12s,transform .12s}
+.app{position:relative}
+.app.pick{border-color:var(--accent)}
+.app.pick .app-id{margin-right:26px}
+.bm{position:absolute;top:-1px;right:46px;width:20px;height:30px;background:var(--accent);clip-path:polygon(0 0,100% 0,100% 100%,50% 76%,0 100%);filter:drop-shadow(0 1px 1px rgba(0,0,0,.2))}
 .app:hover{border-color:var(--accent);transform:translateY(-1px)}
 .app-top{display:flex;gap:12px;align-items:center}
 .app-id{min-width:0;flex:1}

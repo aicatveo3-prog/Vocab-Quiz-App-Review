@@ -47,6 +47,9 @@
     '업데이트 후 화면이 나빠짐, 건의할 창구가 없음'
   ];
 
+  /* 우리 앱과 가장 비슷한 공무원 시험용 앱(다운로드 많은 순). 국내 목록에서는 북마크로 강조하고 별도 탭에도 모아 보여준다 */
+  var PICK = ['com.hackers.app.hackersvoca', 'com.hackers.app.gosivoca4800', 'com.planb.englishStudy', 'com.eduspa.voca.prof23'];
+
   function appCard(a) {
     var S = statsOf(a), neg = S.negTags[0], pos = S.posTags[0];
     var chips = h('div', { class: 'chips' });
@@ -58,7 +61,9 @@
       if (neg && S.n.neg >= 5) chips.appendChild(chip('불만 · ' + TAGNAME[neg[0]], 'neg'));
       if (pos && S.n.pos >= 5) chips.appendChild(chip('칭찬 · ' + TAGNAME[pos[0]], 'pos'));
     }
-    return h('a', { class: 'app', href: '#/app/' + encodeURIComponent(a.id), 'data-q': (a.name + ' ' + a.dev + ' ' + a.kind).toLowerCase() }, [
+    var isPick = PICK.indexOf(a.id) >= 0;
+    return h('a', { class: 'app' + (isPick ? ' pick' : ''), href: '#/app/' + encodeURIComponent(a.id), 'data-q': (a.name + ' ' + a.dev + ' ' + a.kind).toLowerCase() }, [
+      isPick ? h('span', { class: 'bm', title: '공무원 시험용', 'aria-label': '공무원 시험용' }) : null,
       h('div', { class: 'app-top' }, [
         icon(a),
         h('div', { class: 'app-id' }, [h('div', { class: 'app-name', text: a.name }), h('div', { class: 'app-sub', text: a.dev + ' · ' + a.kind })]),
@@ -94,9 +99,10 @@
     var segBox = h('div', { class: 'seg', role: 'tablist' });
     view.appendChild(h('div', { class: 'tools' }, [segBox, q]));
 
-    var secs = [['kr', '국내에서 만든 앱', D.kr], ['en', '해외에서 만든 앱', D.en]].map(function (s) {
+    var pickApps = D.kr.filter(function (a) { return PICK.indexOf(a.id) >= 0; }).sort(function (a, b) { return PICK.indexOf(a.id) - PICK.indexOf(b.id); });
+    var secs = [['kr', '국내에서 만든 앱', D.kr], ['en', '해외에서 만든 앱', D.en], ['pick', '공무원 시험용 앱', pickApps]].map(function (s) {
       var grid = h('div', { class: 'grid' }, s[2].map(appCard));
-      var cnt = h('span', { class: 'cnt', text: '다운로드 많은 순' });
+      var cnt = h('span', { class: 'cnt', text: s[0] === 'pick' ? '우리 앱과 가장 비슷한 앱 · 다운로드 많은 순' : '다운로드 많은 순' });
       var head = h('div', { class: 'sec-h' }, [h('h2', { text: s[1] }), cnt]);
       var sec = h('section', { id: 'sec-' + s[0] }, [head, grid]);
       view.appendChild(sec);
@@ -106,14 +112,15 @@
     function apply() {
       var k = q.value.trim().toLowerCase();
       clear(segBox);
-      [['kr', '국내 앱', D.kr.length], ['en', '해외 앱', D.en.length]].forEach(function (t) {
+      [['kr', '국내 앱', D.kr.length], ['en', '해외 앱', D.en.length], ['pick', '공무원 시험', pickApps.length]].forEach(function (t) {
         segBox.appendChild(h('button', { class: 'seg-b' + (!k && state.tab === t[0] ? ' on' : ''), type: 'button', role: 'tab', onclick: function () { q.value = ''; state.tab = t[0]; apply(); } }, [t[1], h('small', { text: t[2] })]));
       });
       secs.forEach(function (s) {
         var n = 0;
         [].forEach.call(s.grid.children, function (c) { var ok = !k || c.getAttribute('data-q').indexOf(k) >= 0; c.style.display = ok ? '' : 'none'; if (ok) n++; });
         // 검색 중에는 두 목록을 모두, 아니면 선택한 탭만 보여준다
-        s.sec.style.display = (k ? n > 0 : state.tab === s.id) ? '' : 'none';
+        // 공무원 시험 탭은 국내 목록과 같은 앱이라, 검색 중에는 중복되지 않게 숨긴다
+        s.sec.style.display = (k ? (n > 0 && s.id !== 'pick') : state.tab === s.id) ? '' : 'none';
         s.head.style.display = k ? '' : 'none';
       });
     }
