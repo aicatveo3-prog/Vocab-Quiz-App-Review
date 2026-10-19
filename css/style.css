@@ -286,3 +286,16 @@ h3{margin:0 0 6px;font-size:14px}
   .ov-row{grid-template-columns:1fr;gap:2px}
   .ov-steps{grid-template-columns:repeat(2,1fr);gap:10px}
 }
+
+/* 우리 앱과 비교 페이지 */
+.cmp-link{display:block;margin:0 0 18px;padding:14px 18px;background:var(--card);border:1px solid var(--accent);border-radius:14px;box-shadow:var(--shadow)}
+.cmp-link b{display:block;font-size:15px;color:var(--accent)}
+.cmp-link span{display:block;margin-top:2px;font-size:13px;color:var(--dim)}
+.cmp-h{font-size:19px;margin:34px 0 4px;letter-spacing:-.3px}
+.cmp-pri{flex:none;width:22px;height:22px;border-radius:6px;background:var(--accent);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.cmp-it{margin:12px 0;padding:12px 16px}
+.cmp-it .ov-row{grid-template-columns:64px 1fr;padding:8px 0}
+.cmp-t{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding-bottom:6px;border-bottom:1px solid var(--line);font-size:15px}
+.cmp-srcs{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;padding-top:8px;font-size:12.5px}
+.cmp-k{color:var(--dimmer)}
+.cmp-src{color:var(--accent);text-decoration:underline}

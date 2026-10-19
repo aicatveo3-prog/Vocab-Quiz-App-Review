@@ -85,6 +85,10 @@
     view.appendChild(h('p', { class: 'lead', text: '국내·해외 영단어 앱의 구글 플레이 리뷰를 앱별로 모았어요. 앱을 누르면 칭찬과 불만 리뷰를 따로 볼 수 있습니다.' }));
 
     var li = function (t) { return h('li', { text: t }); };
+    if (window.COMPARE) view.appendChild(h('a', { class: 'cmp-link', href: '#/compare' }, [
+      h('b', { text: '우리 앱과 비교 · 가져올 점·피할 점' }),
+      h('span', { text: '해커스공무원 기출보카·말해보카·저절로암기·해커스보카를 우리 앱(Ver2)과 견줘 정리했어요' })
+    ]));
     view.appendChild(h('details', { class: 'take-d' }, [
       h('summary', { text: '한눈에 보기 · 사람들이 좋아하는 것과 싫어하는 것' }),
       h('div', { class: 'take' }, [
@@ -564,10 +568,72 @@
     draw();
   }
 
+  /* ── 우리 앱과 비교 (data/compare.js 의 글을 그린다) ── */
+  function renderCompare() {
+    var C = window.COMPARE;
+    clear(view);
+    if (!C) { renderHome(); return; }
+    document.title = C.title + ' · 영단어 앱 리뷰 모음';
+    view.appendChild(h('a', { class: 'back', href: '#/', text: '← 목록으로' }));
+    var box = h('div', { class: 'overview cmp' });
+    view.appendChild(box);
+    box.appendChild(h('div', { class: 'ov-head' }, [h('h2', { text: C.title }), h('p', { class: 'meta', text: C.sub })]));
+    box.appendChild(h('ul', { class: 'ov-ul' }, C.basis.map(function (t) { return h('li', { text: t }); })));
+
+    var srcLinks = function (src) {
+      var kids = [h('span', { class: 'cmp-k', text: '근거 앱' })];
+      src.forEach(function (x) { kids.push(h('a', { class: 'cmp-src', href: '#/app/' + encodeURIComponent(x[1]), text: x[0] })); });
+      return h('div', { class: 'cmp-srcs' }, kids);
+    };
+    var row = function (k, v) { return v ? h('div', { class: 'ov-row' }, [h('div', { class: 'ov-k', text: k }), h('div', { class: 'ov-v', text: v })]) : null; };
+
+    box.appendChild(h('div', { class: 'ov-sec' }, [h('h3', { text: '한눈에 비교' })]));
+    var T = C.table, thead = h('thead', null, [h('tr', null, T.head.map(function (x) { return h('th', { text: x }); }))]);
+    var tbody = h('tbody', null, T.rows.map(function (r) {
+      return h('tr', null, r.map(function (c, i) { return h(i === 0 ? 'th' : 'td', { text: c }); }));
+    }));
+    box.lastChild.appendChild(h('div', { class: 'ov-tw' }, [h('table', { class: 'ov-t' }, [thead, tbody])]));
+
+    box.appendChild(h('div', { class: 'ov-sec' }, [h('h3', { text: '먼저 알아야 할 점' }),
+      h('ul', { class: 'ov-ul' }, C.facts.map(function (t) { return h('li', { text: t }); }))]));
+
+    box.appendChild(h('h2', { class: 'cmp-h', text: '가져올 점' }));
+    C.take.forEach(function (g) {
+      var sec = h('div', { class: 'ov-sec' }, [h('div', { class: 'ov-sh' }, [h('span', { class: 'cmp-pri', text: g.id }), h('h3', { text: g.name })])]);
+      g.items.forEach(function (it) {
+        sec.appendChild(h('div', { class: 'card cmp-it' }, [
+          h('div', { class: 'cmp-t' }, [h('b', { text: it.title }), h('span', { class: 'ov-badge', text: '크기 ' + it.size })]),
+          row('근거', it.why), row('우리 앱', it.now), row('할 일', it.todo), row('주의', it.warn),
+          srcLinks(it.src)
+        ]));
+      });
+      box.appendChild(sec);
+    });
+
+    box.appendChild(h('h2', { class: 'cmp-h', text: '피할 점' }));
+    var asec = h('div', { class: 'ov-sec' });
+    C.avoid.forEach(function (it) {
+      asec.appendChild(h('div', { class: 'card cmp-it' }, [
+        h('div', { class: 'cmp-t' }, [h('b', { text: it.title })]),
+        row('다른 앱', it.from), row('우리 앱', it.ours), row('할 일', it.todo), srcLinks(it.src)
+      ]));
+    });
+    box.appendChild(asec);
+
+    box.appendChild(h('div', { class: 'ov-sec' }, [h('h3', { text: '이미 앞서 있어서 지킬 점' }),
+      h('ul', { class: 'ov-ul' }, C.keep.map(function (t) { return h('li', { text: t }); }))]));
+    box.appendChild(h('div', { class: 'ov-sec' }, [h('h3', { text: '제안 순서' }),
+      h('ol', { class: 'ov-ul' }, C.plan.map(function (t) { return h('li', { text: t }); }))]));
+    box.appendChild(h('div', { class: 'ov-sec' }, [h('h3', { text: '정해 주실 것' }),
+      h('ul', { class: 'ov-ul' }, C.decide.map(function (t) { return h('li', { text: t }); }))]));
+  }
+
   /* ── 라우터 ── */
   function route() {
     var m = (location.hash || '').match(/^#\/app\/(.+)$/);
-    if (m) renderApp(decodeURIComponent(m[1])); else renderHome();
+    if (m) renderApp(decodeURIComponent(m[1]));
+    else if (location.hash === '#/compare') renderCompare();
+    else renderHome();
     window.scrollTo(0, 0);
   }
   window.addEventListener('hashchange', route);
