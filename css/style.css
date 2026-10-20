@@ -266,7 +266,7 @@ h3{margin:0 0 6px;font-size:14px}
 .ov-sh h3{margin:0;font-size:16px}
 .ov-badge{font-size:11px;font-weight:700;color:var(--dim);background:var(--soft);border-radius:999px;padding:1px 10px}
 .ov-steps{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:14px;margin-top:10px}
-.ov-step{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 10px 12px}
+.ov-step{min-width:0;overflow-wrap:anywhere;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 10px 12px}
 .ov-step p{margin:6px 2px 0;font-size:13px;color:var(--dim);line-height:1.55}
 .ov-st{display:flex;align-items:center;gap:8px;margin-top:10px;padding:0 2px}
 .ov-n{flex:none;width:20px;height:20px;border-radius:50%;background:var(--accent);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}
@@ -284,7 +284,7 @@ h3{margin:0 0 6px;font-size:14px}
 .ov-note{margin:10px 0 0;padding:10px 14px;background:var(--accent-bg);color:var(--ink);border-radius:10px;font-size:13.5px}
 @media (max-width:700px){
   .ov-row{grid-template-columns:1fr;gap:2px}
-  .ov-steps{grid-template-columns:repeat(2,1fr);gap:10px}
+  .ov-steps{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 }
 
 /* 우리 앱과 비교 페이지 */
