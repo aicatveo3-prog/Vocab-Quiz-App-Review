@@ -109,7 +109,7 @@
     var li = function (t) { return h('li', { text: t }); };
     if (window.COMPARE) view.appendChild(h('a', { class: 'cmp-link', href: '#/compare' }, [
       h('b', { text: '우리 앱과 비교 · 가져올 점·피할 점' }),
-      h('span', { text: '해커스공무원 기출보카·공무원시험 영어기출·진가영 공무원 영어앱·말해보카·저절로암기·해커스보카를 우리 앱(Ver2)과 견줘 정리했어요' })
+      h('span', { text: '해커스공무원 기출보카·공무원시험 영어기출·진가영 공무원 영어앱·영단어는관리다·말해보카·저절로암기·해커스보카를 우리 앱(Ver2)과 견줘 정리했어요' })
     ]));
     view.appendChild(h('details', { class: 'take-d' }, [
       h('summary', { text: '한눈에 보기 · 사람들이 좋아하는 것과 싫어하는 것' }),
