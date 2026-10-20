@@ -299,3 +299,6 @@ h3{margin:0 0 6px;font-size:14px}
 .cmp-srcs{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;padding-top:8px;font-size:12.5px}
 .cmp-k{color:var(--dimmer)}
 .cmp-src{color:var(--accent);text-decoration:underline}
+
+.cand .cand-m{margin-top:8px;font-size:13px;color:var(--dim);line-height:1.5}
+.cand .chips{margin-top:8px}

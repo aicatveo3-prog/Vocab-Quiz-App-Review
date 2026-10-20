@@ -78,6 +78,24 @@
     ]);
   }
 
+  /* 조사 예정 후보 카드: 리뷰 수집 전이라 상세 화면 대신 구글 플레이 페이지를 새 창으로 연다 */
+  function candCard(c) {
+    var url = 'https://play.google.com/store/apps/details?id=' + encodeURIComponent(c.id) + '&hl=ko';
+    return h('a', { class: 'app cand', href: url, target: '_blank', rel: 'noopener noreferrer', 'data-q': (c.name + ' ' + c.dev + ' ' + c.group + ' ' + c.memo).toLowerCase() }, [
+      h('div', { class: 'app-top' }, [
+        icon(c),
+        h('div', { class: 'app-id' }, [h('div', { class: 'app-name', text: c.name }), h('div', { class: 'app-sub', text: c.dev + ' · ' + c.group })])
+      ]),
+      h('div', { class: 'stats' }, [
+        h('span', null, [h('b', { text: c.dl }), ' 다운로드']),
+        h('span', null, ['★ ', h('b', { text: c.score || '-' })]),
+        h('span', null, ['평점 ', h('b', { text: c.n ? c.n.toLocaleString('ko-KR') : '-' })])
+      ]),
+      h('div', { class: 'cand-m', text: c.memo }),
+      h('div', { class: 'chips' }, [chip('조사 예정', 'kind'), chip('업데이트 ' + c.updated.slice(0, 7), 'kind')])
+    ]);
+  }
+
   function renderHome() {
     clear(view);
     document.title = '영단어 앱 리뷰 모음';
@@ -104,11 +122,14 @@
     view.appendChild(h('div', { class: 'tools' }, [segBox, q]));
 
     var pickApps = D.kr.filter(function (a) { return PICK.indexOf(a.id) >= 0; }).sort(function (a, b) { return PICK.indexOf(a.id) - PICK.indexOf(b.id); });
-    var secs = [['kr', '국내에서 만든 앱', D.kr], ['en', '해외에서 만든 앱', D.en], ['pick', '공무원 시험용 앱', pickApps]].map(function (s) {
-      var grid = h('div', { class: 'grid' }, s[2].map(appCard));
-      var cnt = h('span', { class: 'cnt', text: s[0] === 'pick' ? '우리 앱과 가장 비슷한 앱 · 다운로드 많은 순' : '다운로드 많은 순' });
+    var CAND = window.CANDIDATES ? window.CANDIDATES.items.slice().sort(function (a, b) { return b.dlNum - a.dlNum; }) : [];
+    var secList = [['kr', '국내에서 만든 앱', D.kr], ['en', '해외에서 만든 앱', D.en], ['pick', '공무원 시험용 앱', pickApps]];
+    if (CAND.length) secList.push(['cand', '조사 예정 후보 앱', CAND]);
+    var secs = secList.map(function (s) {
+      var grid = h('div', { class: 'grid' }, s[2].map(s[0] === 'cand' ? candCard : appCard));
+      var cnt = h('span', { class: 'cnt', text: s[0] === 'pick' ? '우리 앱과 가장 비슷한 앱 · 다운로드 많은 순' : s[0] === 'cand' ? '공무원 영어 후보 · 리뷰 수집 전 · 다운로드 많은 순' : '다운로드 많은 순' });
       var head = h('div', { class: 'sec-h' }, [h('h2', { text: s[1] }), cnt]);
-      var sec = h('section', { id: 'sec-' + s[0] }, [head, grid]);
+      var sec = h('section', { id: 'sec-' + s[0] }, s[0] === 'cand' ? [head, h('p', { class: 'meta', text: window.CANDIDATES.note + ' (' + window.CANDIDATES.date + ' 기준)' }), grid] : [head, grid]);
       view.appendChild(sec);
       return { id: s[0], sec: sec, grid: grid, head: head, total: s[2].length, name: s[1] };
     });
@@ -116,7 +137,9 @@
     function apply() {
       var k = q.value.trim().toLowerCase();
       clear(segBox);
-      [['kr', '국내 앱', D.kr.length], ['en', '해외 앱', D.en.length], ['pick', '공무원 시험', pickApps.length]].forEach(function (t) {
+      var tabs = [['kr', '국내 앱', D.kr.length], ['en', '해외 앱', D.en.length], ['pick', '공무원 시험', pickApps.length]];
+      if (CAND.length) tabs.push(['cand', '조사 예정', CAND.length]);
+      tabs.forEach(function (t) {
         segBox.appendChild(h('button', { class: 'seg-b' + (!k && state.tab === t[0] ? ' on' : ''), type: 'button', role: 'tab', onclick: function () { q.value = ''; state.tab = t[0]; apply(); } }, [t[1], h('small', { text: t[2] })]));
       });
       secs.forEach(function (s) {
