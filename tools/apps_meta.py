@@ -51,6 +51,18 @@ KR = [
  ('com.labianlabs.toeicvocab600','Voca: 600 토익 단어장','Labian Labs','토익'),
  ('com.bean.edu.toeic.words.basic','토익 어휘','iBean','토익'),
  ('com.eduspa.voca.prof23','진가영 공무원 영어앱','에듀스파박문각','공무원'),
+ ('kr.slingcorp.orzocsat','오르조: 기출문제, 수능·내신·공무원·자격증CBT·토익','Sling Inc','기출 문제풀이'),
+ ('net.eduwill.study','에듀윌 합격앱','EDUWILL','공무원 강의·문제'),
+ ('kr.co.trutory.nationaltest.publicservice9','9급 공무원 시험 기출문제','Trutory','공무원 기출'),
+ ('com.jlesoft.civilservice.koreanhistoryexam9','런투런 학습앱(공무원 준비생 학습어플)','ezBrainsoft','공무원 학습'),
+ ('com.jisoopaullee.gongmuwon','공무원 영어 단어장 (영단어는관리다)','Damascus Apps','공무원 영단어'),
+ ('com.examscreen.english9','틈틈영어 -9급','틈틈봇','공무원 잠금화면'),
+ ('com.tmtmapp.official','틈틈봇-공무원시험대비','틈틈봇','공무원 잠금화면·알람'),
+ ('com.stn.gongpul','공풀 - 공무원 기출문제풀이','ST Unitas','공무원 기출'),
+ ('com.promokings.promoking','합격왕: 공무원·경찰·공인중개사·변시 기출','이스터브랩','기출 문제풀이'),
+ ('dev.itpeoplewon.publicofficial9engvoca','9급 공무원 영단어 필수 영단어 카드','간큰토끼','공무원 영단어'),
+ ('kr.co.eduspace.vocaeng','외워보카 영어','eduspace','시험별 단어'),
+ ('com.jmiro.korea.phone.officead','공무원 영어단어 - 재미로 영어','plantymobile','공무원 영단어'),
 ]
 EN = [
  ('com.duolingo','듀오링고','Duolingo (미국)','게임형 언어 학습'),

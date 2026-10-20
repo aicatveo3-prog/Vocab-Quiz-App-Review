@@ -48,7 +48,11 @@
   ];
 
   /* 우리 앱과 가장 비슷한 공무원 시험용 앱(다운로드 많은 순). 국내 목록에서는 북마크로 강조하고 별도 탭에도 모아 보여준다 */
-  var PICK = ['com.hackers.app.hackersvoca', 'com.hackers.app.gosivoca4800', 'com.planb.englishStudy', 'com.eduspa.voca.prof23'];
+  var PICK = ['com.hackers.app.hackersvoca', 'com.hackers.app.gosivoca4800', 'com.planb.englishStudy', 'com.eduspa.voca.prof23',
+    /* 아래는 후기 수집·AI 요약만 한 공무원 앱(설치·체험 없음), 다운로드 많은 순 */
+    'kr.slingcorp.orzocsat', 'net.eduwill.study', 'kr.co.trutory.nationaltest.publicservice9', 'com.jlesoft.civilservice.koreanhistoryexam9',
+    'com.jisoopaullee.gongmuwon', 'com.examscreen.english9', 'com.tmtmapp.official', 'com.stn.gongpul', 'com.promokings.promoking',
+    'dev.itpeoplewon.publicofficial9engvoca', 'kr.co.eduspace.vocaeng', 'com.jmiro.korea.phone.officead'];
 
   function appCard(a) {
     var S = statsOf(a), neg = S.negTags[0], pos = S.posTags[0];
@@ -127,7 +131,7 @@
     if (CAND.length) secList.push(['cand', '조사 예정 후보 앱', CAND]);
     var secs = secList.map(function (s) {
       var grid = h('div', { class: 'grid' }, s[2].map(s[0] === 'cand' ? candCard : appCard));
-      var cnt = h('span', { class: 'cnt', text: s[0] === 'pick' ? '우리 앱과 가장 비슷한 앱 · 다운로드 많은 순' : s[0] === 'cand' ? '공무원 영어 후보 · 리뷰 수집 전 · 다운로드 많은 순' : '다운로드 많은 순' });
+      var cnt = h('span', { class: 'cnt', text: s[0] === 'pick' ? '앞의 4개가 우리 앱과 가장 비슷한 앱 · 나머지는 후기 요약만 · 다운로드 많은 순' : s[0] === 'cand' ? '공무원 영어 후보 · 리뷰 수집 전 · 다운로드 많은 순' : '다운로드 많은 순' });
       var head = h('div', { class: 'sec-h' }, [h('h2', { text: s[1] }), cnt]);
       var sec = h('section', { id: 'sec-' + s[0] }, s[0] === 'cand' ? [head, h('p', { class: 'meta', text: window.CANDIDATES.note + ' (' + window.CANDIDATES.date + ' 기준)' }), grid] : [head, grid]);
       view.appendChild(sec);

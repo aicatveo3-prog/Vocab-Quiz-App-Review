@@ -1,0 +1,1 @@
+window.RV=window.RV||{};window.RV["kr.co.eduspace.vocaeng"]=[[4,"무료인데도 광고가 없고, ui가 깔끔하고 퀴즈랑 단어 양이 많아 좋습니다. 다만 모르는 단어에 대한 책갈피 기능도 추가해주면 더 좋은 앱이 될 거 같습니다!!","2026-10",0,"+free,+wish"]];
